@@ -1,12 +1,12 @@
 from typing import Union
 
 from pydantic import BaseModel, EmailStr
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, SQLModel, AutoString
 
 
 # Shared properties
 class UserBase(SQLModel):
-    email: EmailStr = Field(unique=True, index=True)
+    email: EmailStr = Field(unique=True, index=True, sa_type=AutoString)
     is_active: bool = True
     is_superuser: bool = False
     full_name: Union[str, None] = None
@@ -38,7 +38,6 @@ class UserUpdateMe(BaseModel):
 class User(UserBase, table=True):
     id: Union[int, None] = Field(default=None, primary_key=True)
     hashed_password: str
-    items: list["Item"] = Relationship(back_populates="owner")
 
 
 # Properties to return via API, id is always required
